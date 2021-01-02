@@ -1,0 +1,73 @@
+{% extends "source.html" %} 
+{% block content %}
+<div class="col-md-8">
+<article class="media content-section">
+    <div class='top-bar'>
+      <div class='pic'style="float:left;">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile/' + post.author.image) }}">
+      </div>
+      {% if current_user.is_authenticated %}
+        {% if post.author.id == current_user.id %}
+        <div class="btn-group" style="float: right;" >
+          <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          </button>
+          <div class="dropdown-menu" >
+            <a class="dropdown-item" href="{{url_for('deletepost',psid=post.id)}}">Delete Post</a>
+            <a class="dropdown-item" href="{{url_for('updatepost',psid=post.id)}}">Update Post</a>
+          </div>
+        </div>
+        {% endif %}
+      {% endif %}
+      <div class='posthead' style="margin:0 auto;">
+        <h4><a class="mr-2" href="#">{{ post.author.username }}</a></h4>
+        <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+      </div>
+    </div>
+    <div class="media-body">
+      <div class="article-metadata">
+        <h2>{{ post.title }}</h2>
+      </div>
+      <p class="article-content">{{ post.content }}</p>
+    </div>
+  </article>
+    <div class = 'content-section'>
+       {% for comment in post.comments %}
+
+       <div class='top-bar'>
+        <div class='pic'style="float:left;">
+          <img class="rounded-circle" width="40px" height="40px" src="{{ url_for('static', filename='profile/' + comment.commenter.image) }}">
+        </div>
+
+        <div class='posthead' style="margin-left:50px ; margin-top : 10px;">
+          <a class="mr-2" href="#">{{comment.commenter.username }}</a>
+          <small class="text-muted">{{comment.date_commented.strftime('%Y-%m-%d') }}</small>
+        </div>
+      </div>
+      
+       <p>{{comment.comment}}</p>
+
+       {% endfor %}
+    </div>
+  <form class="form-inline" method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+        <div class="form-group">
+            {% if form.comment.errors %}
+                {{ form.comment(class="form-control form-control-lg is-invalid" ,style="width: 500px;") }}
+                <div class="invalid-feedback">
+                    {% for error in form.comment.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.comment(class="form-control form-control-lg", style="width: 500px;") }}
+            {% endif %}
+        </div>
+    </fieldset>
+    <div class="form-group" style="margin-left: 10px;">
+
+        {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+</form>
+</div>  
+{% endblock content %}

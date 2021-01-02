@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+
+    {% if title %}
+        <title> CS NEWS- {{ title }}</title>
+    {% else %}
+        <title>CS NEWS</title>
+    {% endif %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar fixed-top navbar navbar-dark bg-dark">
+        <a class="navbar-brand" >CSGO hub</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('valvenews') }}">Valve News</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="aboutme">About me</a>
+            </li>
+          </ul>
+          {% if current_user.is_authenticated %}
+          <span class="navbar-text">
+            <a class="nav-link" href="{{ url_for('logout') }}">Log-out </a>
+          </span>
+            <span class="navbar-text">
+              <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+            </span>
+          {% else %}
+            <span class="navbar-text">
+              <a class="nav-link" href="{{ url_for('login') }}">Login </a>
+            </span>
+            <span class="navbar-text">
+              <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+            </span>
+          {% endif %}
+        </div>
+      </nav>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category,message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+              {% endwith %}
+      <main role="main" class="container">
+        <div class="row">
+          {% block content %}{% endblock %}
+        </div>
+      </main>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script rel="stylesheet"  src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>    
+    <script type="module"  src="{{ url_for('static', filename='js/main.js') }}"></script> 
+</body>
+</html>
