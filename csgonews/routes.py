@@ -7,20 +7,19 @@ from PIL import Image
 from csgonews.form import RegistrationForm,LoginForm,UpdateAccountForm,NewPostForm,UpdatePostForm,CommentForm
 from flask_login import login_user ,current_user ,logout_user,login_required
 
-@app.route('/',methods=['POST','GET'])
-@app.route('/home',methods=['POST','GET'])
+@app.route('/',methods=['GET'])
+@app.route('/home',methods=['GET'])
 def home():
     posts = Post.query.order_by(Post.date_posted).all()
     tags =  Tag.query.order_by(Tag.id).all()
     return render_template('home.html', title='home',tags=tags,posts=posts)
 
+
 @app.route('/login',methods=['POST','GET'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-
     form = LoginForm()
-
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password,form.password.data):
@@ -77,7 +76,8 @@ def profile():
             picture_file = save_picture(form.picture.data)
             file_name=current_user.image
             current_user.image= picture_file
-            remove_file(file_name)
+            if file_name != 'defualt.jpg':
+                remove_file(file_name)
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
@@ -123,6 +123,7 @@ def post(psid):
         comment = Comment(comment=form.comment.data,post_id=post.id,user_id=current_user.id)
         db.session.add(comment)
         db.session.commit()
+        form.comment.data=""
     return render_template('viewpost.html',title=f'post{psid}' ,post=post,form= form)
 
 @app.route('/post/<psid>/update',methods=['POST','GET'])
@@ -156,3 +157,8 @@ def deletepost(psid):
         db.session.delete(post)
         db.session.commit()
         return redirect(url_for('home'))
+@app.route('/user/<usid>')
+def user_posts(usid):
+    user = User.query.get_or_404(usid)
+    posts = Post.query.filter_by(user_id=usid)
+    return render_template('user_post.html' , name=user.username , posts=posts , title = 'Posts')

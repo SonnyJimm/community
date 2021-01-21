@@ -29,10 +29,12 @@
       </div>
       <p class="article-content">{{ post.content }}</p>
     </div>
+    {% for voter in post.voters %}
+       <p>{{vote.voters.username}}</p>
+    {% endfor %}
   </article>
-    <div class = 'content-section'>
+    <div class ='content-section'>
        {% for comment in post.comments %}
-
        <div class='top-bar'>
         <div class='pic'style="float:left;">
           <img class="rounded-circle" width="40px" height="40px" src="{{ url_for('static', filename='profile/' + comment.commenter.image) }}">
@@ -48,6 +50,7 @@
 
        {% endfor %}
     </div>
+    {% if current_user.is_authenticated %}
   <form class="form-inline" method="POST" action="" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <fieldset class="form-group">
@@ -65,9 +68,9 @@
         </div>
     </fieldset>
     <div class="form-group" style="margin-left: 10px;">
-
         {{ form.submit(class="btn btn-outline-info") }}
     </div>
-</form>
+  </form>
+  {% endif %}
 </div>  
 {% endblock content %}

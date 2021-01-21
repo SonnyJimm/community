@@ -1,49 +1,35 @@
 {% extends "source.html" %} 
 {% block content%}
     <div class="col-md-8">
-      {% for post in posts %}
-      <article class="media content-section">
-        <div class='top-bar'>
-          <div class='pic'style="float:left;">
-            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile/' + post.author.image) }}">
-          </div>
-          {% if current_user.is_authenticated %}
-            {% if post.author.id == current_user.id %}
-            <div class="btn-group" style="float: right;" >
-              <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              </button>
-              <div class="dropdown-menu" >
-                <a class="dropdown-item" href="{{url_for('deletepost',psid=post.id)}}">Delete Post</a>
-                <a class="dropdown-item" href="{{url_for('updatepost',psid=post.id)}}">Update Post</a>
-              </div>
+      <template id="post_template">
+        <article class="media content-section">
+          <div class='top-bar'>
+            <div class='pic'style="float:left;">
+              <img class="rounded-circle article-img" id="pic">
             </div>
-            {% endif %}
-          {% endif %}
-          <div class='posthead' style="margin:0 auto;">
-            <h4><a class="mr-2" href="#">{{ post.author.username }}</a></h4>
-            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            <div class='posthead' style="margin:0 auto;">
+              <h4><a class="mr-2" id="author" href=""></a></h4>
+              <small class="text-muted" id="date" ></small>
+            </div>
           </div>
-        </div>
-        <div class="media-body">
-          <div class="article-metadata">
-            <h2><a class="article-title" href="/post/{{post.id}}">{{ post.title }}</a></h2>
+          <div class="media-body">
+            <div class="article-metadata">
+              <h2><a class="article-title" id="title" href=""></a></h2>
+            </div>
+            <p class="article-content" id="content" ></p>
           </div>
-          <p class="article-content">{{ post.content }}</p>
-        </div>
-      </article>
-  {% endfor %}
+        </article>
+      </template>
     </div>
-
-    
     <div class="col-md-3">
             <div class="content-section">
               <h3>Filter</h3>
               <p class='text-muted'>
                 <ul class="list-group">
-                  <li class="list-group-item list-group-item-light" ><button type="button" class="btn btn-light" name = "submit" value="latest">Latest Posts</button></li>
-                  <li class="list-group-item list-group-item-light" ><button type="button" class="btn btn-light" name = "submit" value="popular">Popular posts</button></li>
+                  <li class="list-group-item list-group-item-light" ><a href='{{url_for("home")}}'>Latest Posts</a></li>
+                  <li class="list-group-item list-group-item-light" ><a href=''>Popular posts</a></li>
                   {% if current_user.is_authenticated %}
-                  <li class="list-group-item list-group-item-light"><button type="button" class="btn btn-light" name = "submit" value="mine">My posts</button></li>
+                  <li class="list-group-item list-group-item-light"><a href='{{url_for("userspost")}}'>My posts</a></li>
                   {% endif %}
                   <li class="list-group-item list-group-item-light">Search by tags</li>
                   <form class="content-section" method="POST" action="home">
@@ -56,4 +42,6 @@
               </p>
             </div>
     </div>
+    <p id='bum'></p>
+    <script type="module"  src="{{ url_for('static', filename='js/home.js') }}"></script>
 {% endblock content %}
